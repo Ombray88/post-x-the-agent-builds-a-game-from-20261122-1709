@@ -95,6 +95,11 @@
 </div>
 
 <script>
+/**
+ * Neon Breakout Game Logic
+ * Implements canvas rendering, particle systems, collision detection,
+ * paddle and keyboard/mouse controls, and game states.
+ */
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 const scoreVal = document.getElementById('scoreVal');
@@ -105,6 +110,7 @@ let score = 0;
 let lives = 3;
 let gameState = 'START'; // START, PLAYING, GAMEOVER, WIN
 
+// Paddle Configuration
 const paddle = {
   w: 100,
   h: 14,
@@ -114,6 +120,7 @@ const paddle = {
   color: '#ec4899'
 };
 
+// Ball Configuration
 const ball = {
   x: canvas.width / 2,
   y: canvas.height - 50,
@@ -124,6 +131,7 @@ const ball = {
   color: '#38bdf8'
 };
 
+// Bricks Grid Configuration
 const brickRowCount = 5;
 const brickColumnCount = 8;
 const brickWidth = 64;
@@ -149,6 +157,7 @@ function initBricks() {
   }
 }
 
+// Particle System for Brick Destruction
 let particles = [];
 function createParticles(x, y, color) {
   for (let i = 0; i < 12; i++) {
@@ -164,6 +173,7 @@ function createParticles(x, y, color) {
   }
 }
 
+// Input Controls state
 let rightPressed = false;
 let leftPressed = false;
 
@@ -209,6 +219,7 @@ function startGame() {
   startBtn.style.display = 'none';
 }
 
+// Collision Detection for Bricks
 function collisionDetection() {
   for (let c = 0; c < brickColumnCount; c++) {
     for (let r = 0; r < brickRowCount; r++) {
@@ -224,9 +235,9 @@ function collisionDetection() {
           b.status = 0;
           score += 10;
           scoreVal.textContent = score;
-          createParticles(b.x + brickWidth/2, b.y + brickHeight/2, b.color);
+          createParticles(b.x + brickWidth / 2, b.y + brickHeight / 2, b.color);
           
-          // Check win
+          // Check for win condition
           let won = true;
           for (let cc = 0; cc < brickColumnCount; cc++) {
             for (let rr = 0; rr < brickRowCount; rr++) {
@@ -244,6 +255,7 @@ function collisionDetection() {
   }
 }
 
+// Render Functions with Neon Glow
 function drawBall() {
   ctx.beginPath();
   ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
@@ -300,6 +312,7 @@ function drawParticles() {
   });
 }
 
+// Game Update Loop
 function update() {
   if (gameState !== 'PLAYING') return;
 
@@ -321,7 +334,6 @@ function update() {
   } else if (ball.y + ball.r > canvas.height) {
     // Paddle collision or lose life
     if (ball.x > paddle.x && ball.x < paddle.x + paddle.w) {
-      // Hit paddle
       let hitPoint = ball.x - (paddle.x + paddle.w / 2);
       ball.dx = hitPoint * 0.15;
       ball.dy = -Math.abs(ball.dy);
@@ -345,6 +357,7 @@ function update() {
   collisionDetection();
 }
 
+// Frame Render
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
